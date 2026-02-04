@@ -6,6 +6,8 @@ use Laravel\Fortify\Features;
 //Controllers abaixo
 use App\Http\Controllers\Vendedores\VendedorController;
 use App\Http\Controllers\Clientes\ClienteController;
+use App\Http\Controllers\Vendas\VendaController;
+use App\Http\Controllers\Produtos\ProdutoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -26,6 +28,14 @@ Route::prefix("/vendedores")->group(function(){
 Route::prefix("/clientes")->group(function(){
     Route::get('/', [ClienteController::class, 'index'])->name('clientes.listar');
     Route::get('/persistir', [ClienteController::class, 'persistir'])->name('clientes.persistir');
+});
+Route::prefix("/vendas")->group(function(){
+    Route::get('/', [VendaController::class, 'index'])->name('vendas.listar');
+    Route::get('/persistir', [VendaController::class, 'persistir'])->name('vendas.persistir');
+});
+
+Route::prefix("/produtos")->group(function(){
+    Route::get('/', [ProdutoController::class, 'index'])->name('produtos.listar');
 });
 
 
