@@ -23,358 +23,235 @@ const vendedor = props.vendedor;
 
 // checa explicitamente null/undefined e mostra erro
 
-onMounted(() => {
-    if (props.idVendedor != null && !vendedor) {
-        router.visit(vendedores.listar().url);
-        // toast.error('Vendedor não encontrado.');
-    }
-});
 
-function onComissaoInput(e: Event) {
-    const el = e.target as HTMLInputElement;
-    let v = el.value;
-
-    // aceita vírgula como separador decimal
-    v = v.replace(',', '.');
-
-    // apenas números e ponto
-    v = v.replace(/[^\d.]/g, '');
-
-    // apenas UM ponto
-    const dotIndex = v.indexOf('.');
-    if (dotIndex !== -1) {
-        v = v.slice(0, dotIndex + 1) + v.slice(dotIndex + 1).replace(/\./g, '');
-    }
-
-    // se começa com ponto, prefixa 0
-    if (v.startsWith('.')) {
-        v = '0' + v;
-    }
-
-    // limita a 1 casa decimal
-    if (v.includes('.')) {
-        const [intPart, decPart] = v.split('.');
-        v = intPart + '.' + decPart.slice(0, 1);
-    }
-
-    // bloqueia valores acima de 100
-    const n = Number(v);
-    if (!isNaN(n) && n > 100) {
-        v = '100';
-    }
-
-    // se for exatamente 100, não permite ponto
-    if (v === '100.' || v.startsWith('100.')) {
-        v = '100';
-    }
-
-    form.comissao = v;
-}
-
-function onComissaoBlur() {
-    if (!form.comissao) return;
-
-    let n = Number(form.comissao.replace(',', '.'));
-
-    if (isNaN(n)) {
-        form.comissao = '';
-        return;
-    }
-
-    // clamp final de segurança
-    n = Math.max(0, Math.min(100, n));
-
-    // remove .0 desnecessário
-    form.comissao = Number.isInteger(n) ? String(n) : n.toFixed(1);
-}
-
-const form = useForm({
-    nome: vendedor?.user?.name ?? '',
-    email: vendedor?.user?.email ?? '',
-    cpf: vendedor?.cpf ?? '',
-    comissao: vendedor?.comissao ?? '',
-    cep: vendedor?.endereco?.cep ?? '',
-    rua: vendedor?.endereco?.rua ?? '',
-    numero: vendedor?.endereco?.numero ?? '',
-    complemento: vendedor?.endereco?.complemento ?? '',
-    bairro: vendedor?.endereco?.bairro ?? '',
-    cidade: vendedor?.endereco?.cidade ?? '',
-    estado: vendedor?.endereco?.estado ?? '',
-});
-
-function viaCepLookup(cep: string) {
-    cep = cep.replace(/\D/g, ''); // Remove non-digit characters
-    fetch(https://viacep.com.br/ws/${cep}/json/)
-        .then((response) => response.json())
-        .then((data) => {
-            form.rua = data.logradouro || '';
-            form.bairro = data.bairro || '';
-            form.cidade = data.localidade || '';
-            form.estado = data.uf || '';
-        })
-        .catch((error) => {
-            console.error('Erro ao buscar CEP:', error);
-        });
-}
-
-function submit() {
-    if (props.idVendedor != null) {
-        // edição
-        form.put(vendedores.update(props.idVendedor).url, {
-            onSuccess: () => {
-                toast.success('Vendedor atualizado com sucesso.');
-            },
-            onError: (errors) => {
-                console.log('Erros:', errors);
-            },
-        });
-        return;
-    }
-
-    // ajuste a URL para a rota correta do backend, ex: '/vendedores' ou use Wayfinder/url gerada
-    form.post(vendedores.criar().url, {
-        onSuccess: () => {
-            // Sucesso - formulário será resetado automaticamente
-            toast.success('Vendedor criado com sucesso.');
-        },
-        onError: (errors) => {
-            // Erros de validação
-            console.log('Erros:', errors);
-        },
-    });
-}
 </script>
 
 <template>
     <Head title="Vendedor" />
 
     <AppLayout>
-        <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-        >
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <Heading title="Vendedores" description="Cria vendedores" />
+
             <div class="md:grid-cols 4 grid-cols-1">
-                <div
-                    class="relative min-h-screen flex-1 rounded-xl border border-sidebar-border/70 p-4 md:min-h-min dark:border-sidebar-border"
-                >
+                <div class="relative min-h-screen flex-1 rounded-xl border p-4">
+
                     <Form>
                         <Heading title="Informações pessoais" />
 
                         <div class="mb-4 grid grid-cols-1 gap-6 md:grid-cols-3">
+
+                            <!-- NOME -->
                             <div class="grid gap-2">
                                 <Label for="nome">Nome</Label>
-                                <!--<Input
-                                    
+                                <!--
+                                <Input
+                                    id="nome"
+                                    v-model="form.nome"
+                                    type="text"
+                                />
+                                -->
+                                <Input
                                     id="nome"
                                     type="text"
-                                    autofocus
-                                    :tabindex="1"
-                                    autocomplete="nome"
-                                    name="nome"
-                                    placeholder="Nome Completo"
-                                />-->
-                                <!-- <InputError :message="form.errors.nome" />-->
+                                    placeholder="Nome completo"
+                                />
+                                <!-- <InputError :message="form.errors.nome" /> -->
                             </div>
 
+                            <!-- EMAIL -->
                             <div class="grid gap-2">
                                 <Label for="email">Email</Label>
-                                <!--<Input
+                                <!--
+                                <Input
                                     id="email"
                                     v-model="form.email"
                                     type="email"
-                                    :tabindex="2"
-                                    autocomplete="email"
-                                    name="email"
-                                    placeholder="email@exemplo.com"
-                                />-->
+                                />
+                                -->
                                 <Input
                                     id="email"
-                                   
                                     type="email"
-                                    :tabindex="2"
-                                    autocomplete="email"
-                                    name="email"
                                     placeholder="email@exemplo.com"
                                 />
-                                <!--<InputError :message="form.errors.email" />-->
-                                
+                                <!-- <InputError :message="form.errors.email" /> -->
                             </div>
 
+                            <!-- CPF -->
                             <div class="grid gap-2">
                                 <Label for="cpf">CPF</Label>
-                                <!--<Input
-                                    v-model="form.cpf"
-                                    id="cpf"
-                                    type="text"
-                                    :tabindex="2"
-                                    autocomplete="cpf"
-                                    name="cpf"
-                                    placeholder="000.000.000-00"
-                                    v-maska="'###.###.###-##'"
-                                />
-                                <InputError :message="form.errors.cpf" />-->
+                                <!--
                                 <Input
-                                    v-model="form.cpf"
                                     id="cpf"
+                                    v-model="form.cpf"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="cpf"
-                                    name="cpf"
-                                    placeholder="000.000.000-00"
                                     v-maska="'###.###.###-##'"
                                 />
-                                <InputError :message="form.errors.cpf" />
+                                -->
+                                <Input
+                                    id="cpf"
+                                    type="text"
+                                    placeholder="000.000.000-00"
+                                />
+                                <!-- <InputError :message="form.errors.cpf" /> -->
                             </div>
+
                         </div>
+
                         <Separator />
                         <Heading title="Informações adicionais" class="mt-4" />
-                        <div
-                            class="mt-4 mb-4 grid grid-cols-1 gap-6 md:grid-cols-3"
-                        >
+
+                        <!-- COMISSÃO -->
+                        <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="grid gap-2">
                                 <Label for="comissao">Comissão</Label>
-                                <div class="relative">
-                                    <Input
-                                        v-model="form.comissao"
-                                        type="text"
-                                        class="pr-8"
-                                        @blur="onComissaoBlur"
-                                        @input="onComissaoInput"
-                                        id="comissao"
-                                        placeholder="0.00%"
-                                    />
-                                    <span
-                                        class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
-                                    >
-                                        %
-                                    </span>
-                                </div>
-                                <InputError :message="form.errors.comissao" />
+                                <!--
+                                <Input
+                                    id="comissao"
+                                    v-model="form.comissao"
+                                />
+                                -->
+                                <Input
+                                    id="comissao"
+                                    type="text"
+                                    placeholder="0.0%"
+                                />
+                                <!-- <InputError :message="form.errors.comissao" /> -->
                             </div>
                         </div>
+
                         <Separator />
                         <Heading title="Endereço" class="mt-4" />
-                        <div
-                            class="mt-4 mb-4 grid grid-cols-1 gap-6 md:grid-cols-3"
-                        >
+
+                        <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3">
+
+                            <!-- CEP -->
                             <div class="grid gap-2">
                                 <Label for="cep">CEP</Label>
+                                <!--
                                 <Input
-                                    @blur="viaCepLookup(form.cep)"
+                                    id="cep"
                                     v-model="form.cep"
+                                />
+                                -->
+                                <Input
                                     id="cep"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="cep"
-                                    name="cep"
-                                    placeholder="insira seu CEP"
-                                    v-maska="'#####-###'"
+                                    placeholder="00000-000"
                                 />
-                                <InputError :message="form.errors.cep" />
+                                <!-- <InputError :message="form.errors.cep" /> -->
                             </div>
 
+                            <!-- RUA -->
                             <div class="grid gap-2">
                                 <Label for="rua">Rua</Label>
+                                <!--
                                 <Input
+                                    id="rua"
                                     v-model="form.rua"
+                                />
+                                -->
+                                <Input
                                     id="rua"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="rua"
-                                    name="rua"
-                                    placeholder="Insira sua rua"
+                                    placeholder="Rua"
                                 />
-                                <InputError :message="form.errors.rua" />
                             </div>
 
+                            <!-- NUMERO -->
                             <div class="grid gap-2">
-                                <Label for="numero">Numero</Label>
+                                <Label for="numero">Número</Label>
+                                <!--
                                 <Input
+                                    id="numero"
                                     v-model="form.numero"
+                                />
+                                -->
+                                <Input
                                     id="numero"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="numero"
-                                    name="numero"
-                                    placeholder="Insira sua numero"
+                                    placeholder="Número"
                                 />
-                                <InputError :message="form.errors.numero" />
                             </div>
 
+                            <!-- COMPLEMENTO -->
                             <div class="grid gap-2">
                                 <Label for="complemento">Complemento</Label>
+                                <!--
                                 <Input
+                                    id="complemento"
                                     v-model="form.complemento"
+                                />
+                                -->
+                                <Input
                                     id="complemento"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="complemento"
-                                    name="complemento"
-                                    placeholder="Insira sua complemento"
-                                />
-                                <InputError
-                                    :message="form.errors.complemento"
+                                    placeholder="Complemento"
                                 />
                             </div>
 
+                            <!-- BAIRRO -->
                             <div class="grid gap-2">
                                 <Label for="bairro">Bairro</Label>
+                                <!--
                                 <Input
+                                    id="bairro"
                                     v-model="form.bairro"
+                                />
+                                -->
+                                <Input
                                     id="bairro"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="bairro"
-                                    name="bairro"
-                                    placeholder="Insira sua bairro"
+                                    placeholder="Bairro"
                                 />
-                                <InputError :message="form.errors.bairro" />
                             </div>
 
+                            <!-- CIDADE -->
                             <div class="grid gap-2">
                                 <Label for="cidade">Cidade</Label>
+                                <!--
                                 <Input
+                                    id="cidade"
                                     v-model="form.cidade"
+                                />
+                                -->
+                                <Input
                                     id="cidade"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="cidade"
-                                    name="cidade"
-                                    placeholder="Insira sua cidade"
+                                    placeholder="Cidade"
                                 />
-                                <InputError :message="form.errors.cidade" />
                             </div>
 
+                            <!-- ESTADO -->
                             <div class="grid gap-2">
                                 <Label for="estado">Estado</Label>
+                                <!--
                                 <Input
+                                    id="estado"
                                     v-model="form.estado"
+                                />
+                                -->
+                                <Input
                                     id="estado"
                                     type="text"
-                                    :tabindex="2"
-                                    autocomplete="estado"
-                                    name="estado"
-                                    placeholder="Insira sua estado"
+                                    placeholder="UF"
                                 />
-                                <InputError :message="form.errors.estado" />
                             </div>
+
                         </div>
 
                         <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-5">
-                            <Button
-                                type="submit"
-                                class="mt-2 w-full bg-accent hover:bg-accent/90"
-                                tabindex="5"
-                                data-test="register-user-button"
-                            >
+                            <Button type="submit" class="mt-2 w-full">
                                 Salvar Vendedor
                             </Button>
                         </div>
+
                     </Form>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+
 
 <style scoped></style>
