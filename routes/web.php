@@ -23,11 +23,18 @@ Route::prefix("/vendedores")->group(function(){
     Route::get('/',[VendedorController::class, 'index'])->name('vendedores.listar');
     Route::get('/persistir', [VendedorController::class, 'persistir'])->name('vendedores.persistir');
 
+    //Rotas de persistencias
+    Route::post('/create', [VendedorController::class, 'create'])->name('vendedores.create');
+
+
 });
 
 Route::prefix("/clientes")->group(function(){
     Route::get('/', [ClienteController::class, 'index'])->name('clientes.listar');
     Route::get('/persistir', [ClienteController::class, 'persistir'])->name('clientes.persistir');
+
+    //Persitencias do cliente
+    Route::post('/create', [ClienteController::class, 'create'])->name('clientes.create');
 });
 Route::prefix("/vendas")->group(function(){
     Route::get('/', [VendaController::class, 'index'])->name('vendas.listar');

@@ -85,9 +85,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 
                 <!-- AÇÃO FINAL -->
                 <div class="mt-6 flex justify-center">
-                    <Button type="submit" class="bg-green-500 hover:bg-green-600 text-white">
-                        Salvar venda
-                    </Button>
                     <Button type="submit" class="bg-green-400 dark:bg-green-500 dark:hover:bg-green-500/90" tabindex="5"
                         data-test="register-user-button">
                         Gravar venda
