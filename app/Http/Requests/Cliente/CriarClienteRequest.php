@@ -23,7 +23,7 @@ class CriarClienteRequest extends FormRequest
     {
         return [
            'nome'                   => ['required', 'string'],
-           'nome'                   => ['required', 'email'],
+           'email'                  => ['required', 'email'],
            'endereco'               => ['required', 'array'],
            'endereco.cep'           => ['required', 'string', 'max:8'],
            'endereco.rua'           => ['required', 'string', 'max:100'],

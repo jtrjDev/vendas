@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
-
 import {
     Table,
     TableBody,
@@ -14,20 +14,36 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import ButtonCriarProduto from '@/components/produtos/ButtonCriarProduto.vue';
-</script>
-<template>
 
+// props do Inertia (reativo)
+const page = usePage();
+
+const produtos = computed(() => page.props.produtos as Array<{
+    id: number;
+    nome: string;
+    valor: number;
+}>);
+
+// produto selecionado para edição
+const produtoSelecionado = ref<{
+    id: number;
+    nome: string;
+    valor: number;
+} | null>(null);
+</script>
+
+<template>
     <Head title="Produtos" />
 
     <AppLayout>
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div class="flex h-full flex-1 flex-col gap-4 p-4">
             <Heading title="Produtos" description="Lista de produtos" />
-            <!-- Botão nova venda -->
-            <div class="md:grid-cols 4 grid-cols-1">
-                <ButtonCriarProduto />
 
-
-            </div>
+            <!-- Botão criar -->
+            <ButtonCriarProduto
+                :produto="produtoSelecionado"
+                @fechar="produtoSelecionado = null"
+            />
 
             <!-- Tabela -->
             <div class="relative flex-1 rounded-xl border p-4">
@@ -40,22 +56,16 @@ import ButtonCriarProduto from '@/components/produtos/ButtonCriarProduto.vue';
                     </TableHeader>
 
                     <TableBody>
-                        <!-- Venda fictícia 1 -->
-                        <TableRow>
-                            <TableCell>Sorvete Self-Serv</TableCell>
+                        <TableRow
+                            v-for="produto in produtos"
+                            :key="produto.id"
+                        >
+                            <TableCell>{{ produto.nome }}</TableCell>
+
                             <TableCell class="flex gap-2">
-                                <Button>
-                                    Editar
-                                </Button>
-                                <Button>
-                                    Remover
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Picolé de frutas</TableCell>
-                            <TableCell class="flex gap-2">
-                                <Button>
+                                <Button
+                                    @click="produtoSelecionado = produto"
+                                >
                                     Editar
                                 </Button>
                                 <Button>
@@ -64,8 +74,11 @@ import ButtonCriarProduto from '@/components/produtos/ButtonCriarProduto.vue';
                             </TableCell>
                         </TableRow>
 
-                        <!-- Venda fictícia 2 -->
-
+                        <TableRow v-if="produtos.length === 0">
+                            <TableCell colspan="2" class="text-center">
+                                Nenhum produto cadastrado
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </div>

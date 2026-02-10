@@ -43,6 +43,12 @@ Route::prefix("/vendas")->group(function(){
 
 Route::prefix("/produtos")->group(function(){
     Route::get('/', [ProdutoController::class, 'index'])->name('produtos.listar');
+    Route::get('/persistir', [ProdutoController::class, 'persistir'])->name('produtos.persistir');
+    //Persistencias
+    Route::post('/create', [ProdutoController::class, 'create'])->name('produtos.create');
+    Route::put('/produtos/{id}', [ProdutoController::class, 'update'])
+    ->name('produtos.update');
+
 });
 
 
