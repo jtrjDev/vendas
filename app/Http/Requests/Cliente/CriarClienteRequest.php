@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cliente;
 
+use App\Http\Requests\Endereco\CriarEnderecoRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CriarClienteRequest extends FormRequest
@@ -21,23 +22,18 @@ class CriarClienteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $cliente = [
            'nome'                   => ['required', 'string'],
            'email'                  => ['required', 'email'],
-           'endereco'               => ['required', 'array'],
-           'endereco.cep'           => ['required', 'string', 'max:8'],
-           'endereco.rua'           => ['required', 'string', 'max:100'],
-           'endereco.numero'        => ['required', 'string', 'max:10'],
-           'endereco.complemento'   => ['required', 'string', 'max:50'],
-           'endereco.bairro'        => ['required', 'string'],
-           'endereco.cidade'        => ['required', 'string'],
-           'endereco.estado'        => ['required', 'string', 'max:2'],
+           
         ];
+        $endereco = (new CriarEnderecoRequest())->rules();
+        return array_merge($cliente, $endereco);
     }
 
     public  function messages()
     {
-        return [
+        $cliente = [
             'required'   => ':attribute e obrigatorio',
             'string'     => ':attribute deve ser uma string',
             'email'      => ':attribute deve ser um email',
@@ -45,6 +41,9 @@ class CriarClienteRequest extends FormRequest
             'numeric'    => ':attribute deve ser um numero',
             'array'      => ':attribute deve ser um array',
         ];
+
+        $endereco = (new CriarEnderecoRequest())->rules();
+        return array_merge($cliente, $endereco);
 
     }
 }

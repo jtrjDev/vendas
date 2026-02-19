@@ -23,7 +23,7 @@ class CriarProdutoRequest extends FormRequest
     {
         return [
             'nome'  => ['required','string', 'max:150'],
-            'valor' => ['required', 'numeric'],
+            'valor' => ['required', 'numeric', 'min:0'],
 
         ];
     }
@@ -31,8 +31,12 @@ class CriarProdutoRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'  => ':attribute e obrigatorio',
-            'decimal'   => ':attribute precisa ser valor',
+            'required'          => 'O campo :attribute e obrigatorio',
+            'string'            => 'O campo :attribute deve ser uma string',
+            'max'               => 'O campo :attribute não pode exceder :max caracteres.',
+            'numeric'           => 'O campo :attribute deve ser um numero',
+            'min'               => 'O campo :attribute deve ter no minimo :min',
+            
         ];
     }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,16 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import clientes from '@/routes/clientes';
+import { computed } from 'vue';
+
+type Cliente = Record<string, any>;
+const page = usePage();
+
+const clientesList = computed<Cliente[]>(()=>{
+    return page.props.clientes ?? [];
+});
+
 </script>
 
 
@@ -24,7 +34,7 @@ import {
             <Heading title="Clientes" description="Lista de clientes" />
 
             <div class="flex justify-end">
-                <Link href="/clientes/persistir">
+                <Link :href="clientes.persistir()">
                     <Button>
                         Criar Novo Cliente
                     </Button>
@@ -44,10 +54,13 @@ import {
 
                     <TableBody>
                         <!-- Linha de exemplo (estática, didática) -->
-                        <TableRow>
-                            <TableCell>Cliente Teste</TableCell>
-                            <TableCell>cliente@teste.com</TableCell>
-                            <TableCell>000.000.000-00</TableCell>
+                        <TableRow
+                            v-for="cliente in clientesList"
+                            :key="cliente.id_cliente"
+                        >
+                            <TableCell>{{ cliente.nome }}</TableCell>
+                            <TableCell>{{ cliente.email }}</TableCell>
+                            <TableCell>{{ cliente.cpf }}</TableCell>
                             <TableCell>
                                 <Button variant="destructive">
                                     Remover

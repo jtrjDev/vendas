@@ -21,11 +21,13 @@ Route::get('dashboard', function () {
 
 Route::prefix("/vendedores")->group(function(){
     Route::get('/',[VendedorController::class, 'index'])->name('vendedores.listar');
-    Route::get('/persistir', [VendedorController::class, 'persistir'])->name('vendedores.persistir');
+    Route::get('/persistir/{id?}', [VendedorController::class, 'persistir'])->name('vendedores.persistir');
+
 
     //Rotas de persistencias
     Route::post('/create', [VendedorController::class, 'create'])->name('vendedores.create');
-
+    Route::put('/update/{idVendedor}', [VendedorController::class, 'update'])->name('vendedores.update');
+    Route::delete('/delete/{idVendedor}', [VendedorController::class, 'remove'])->name('vendedores.remove');
 
 });
 

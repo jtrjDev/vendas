@@ -12,7 +12,10 @@ use Inertia\Inertia;
 class ClienteController extends Controller
 {
     public function index(){
-        return Inertia::render("clientes/Listar");
+        $clientes = Cliente::query()->where('removido', false)->get();
+        return Inertia::render("clientes/Listar", [
+            'clientes' => $clientes
+        ]);
     }
 
     public function persistir(){
@@ -21,19 +24,20 @@ class ClienteController extends Controller
 
     public function create(CriarClienteRequest $request)
     {
+        
         $conn = \DB::connection();
 
         try {
             $conn->beginTransaction();
             //Criar o endereco
             $endereco = Endereco::query()->create([
-                'cep'           => $request->endereco->cep,
-                'rua'           => $request->endereco->rua,
-                'numero'        => $request->endereco->numero,
-                'complemento'   => $request->endereco->complemento,
-                'bairro'        => $request->endereco->bairro,
-                'cidade'        => $request->endereco->cidade,
-                'estado'        => $request->endereco->estado,
+                'cep'           => $request->cep,
+                'rua'           => $request->rua,
+                'numero'        => $request->numero,
+                'complemento'   => $request->complemento,
+                'bairro'        => $request->bairro,
+                'cidade'        => $request->cidade,
+                'estado'        => $request->estado,
             ]);
             // Criar o cliente
             $cliente = Cliente::query()->create([
