@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head, useForm } from '@inertiajs/vue3';
+import { Form, Head, router, useForm, usePage } from '@inertiajs/vue3';
 
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -9,18 +9,39 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
 import clientes from '@/routes/clientes';
+import { onMounted } from 'vue';
+
+const page = usePage();
+
+const props = page.props as unknown as {
+    idCliente?: number | null;
+    cliente?: Record<string, any>;
+}
+
+const cliente = props.cliente;
+const idCliente = props.idCliente;
+
+
+ onMounted(()=>{
+        if (props.idCliente != null && !cliente){
+            router.visit(clientes.listar().url);
+            //toast.error('Vendedor não encontrado');
+        }
+    });
+
 
 const form = useForm({
-    nome: '',
-    email: 'marcos@email.com',
-    cpf: '1234567898',
-    cep: '86040027',
-    rua: 'rua 1',
-    numero: '100',
-    complemento: 'teste',
-    bairro: 'centro',
-    cidade: 'Londrina',
-    estado: 'PR',
+    id_cliente: idCliente ?? null,
+    nome: cliente?.nome ?? '',
+    email: cliente?.email ?? '',
+    cpf: cliente?.cpf ?? '',
+    cep: cliente?.endereco?.cep ?? '',
+    rua: cliente?.endereco?.rua ?? '',
+    numero: cliente?.endereco?.numero ?? '',
+    complemento: cliente?.endereco?.complemento ?? '',
+    bairro: cliente?.endereco?.bairro ?? '',
+    cidade: cliente?.endereco?.cidade ?? '',
+    estado: cliente?.endereco?.estado ?? '',
 
 });
 
@@ -43,6 +64,20 @@ function viaCepLookup(cep: string) {
 function enviar() {
     // console.log(form);
     // return;
+    if (idCliente !== null) {
+        form.put(clientes.update(idCliente).url,{
+            onSuccess: () => {
+                    console.log('success');
+                },
+                onError: () => {
+                    console.log('erro');
+                    
+                } 
+        })
+
+        return;
+    }
+
     form.post(clientes.create().url, {
         onSuccess: () => {
             console.log('success');

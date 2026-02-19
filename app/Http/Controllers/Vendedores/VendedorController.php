@@ -75,7 +75,7 @@ class VendedorController extends Controller
             // Após o sucesso, retorna uma resposta com redirecionamento
             return redirect()
                 ->route('vendedores.listar')
-                ->with('success', 'Vendedor removido com sucesso');
+                ->with('success', 'Vendedor cadastrado com sucesso');
         } catch (\Exception $e) {
             $conn->rollback();
         }
@@ -113,9 +113,10 @@ class VendedorController extends Controller
             // Após o sucesso, retorna uma resposta com redirecionamento
             return redirect()
                 ->route('vendedores.listar')
-                ->with('success', 'Vendedor removido com sucesso'); // Certifique-se de que a rota esteja configurada corretamente
+                ->with('success', 'Vendedor editado com sucesso'); // Certifique-se de que a rota esteja configurada corretamente
         } catch (\Exception $e) {
             $conn->rollback();
+            dd($e);
         }
     }
 

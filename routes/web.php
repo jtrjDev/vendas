@@ -33,10 +33,12 @@ Route::prefix("/vendedores")->group(function(){
 
 Route::prefix("/clientes")->group(function(){
     Route::get('/', [ClienteController::class, 'index'])->name('clientes.listar');
-    Route::get('/persistir', [ClienteController::class, 'persistir'])->name('clientes.persistir');
+    Route::get('/persistir/{id?}', [ClienteController::class, 'persistir'])->name('clientes.persistir');
 
     //Persitencias do cliente
     Route::post('/create', [ClienteController::class, 'create'])->name('clientes.create');
+    Route::put('/update/{idCliente}', [ClienteController::class, 'update'])->name('clientes.update');
+    Route::delete('/delete/{idCliente}', [ClienteController::class, 'remove'])->name('clientes.remove');
 });
 Route::prefix("/vendas")->group(function(){
     Route::get('/', [VendaController::class, 'index'])->name('vendas.listar');

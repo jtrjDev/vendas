@@ -4,6 +4,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
+import AcoesTabelaCliente from '@/components/Clientes/AcoesTabelaCliente.vue';
 
 import {
     Table,
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/table';
 import clientes from '@/routes/clientes';
 import { computed } from 'vue';
+import { Helper } from '@/Utils/Helper';
 
 type Cliente = Record<string, any>;
 const page = usePage();
@@ -42,7 +44,7 @@ const clientesList = computed<Cliente[]>(()=>{
             </div>
 
             <div class="relative flex-1 rounded-xl border p-4">
-                <Table>
+                <Table v-if="clientesList.length >0">
                     <TableHeader>
                         <TableRow>
                             <TableHead>Nome</TableHead>
@@ -60,15 +62,31 @@ const clientesList = computed<Cliente[]>(()=>{
                         >
                             <TableCell>{{ cliente.nome }}</TableCell>
                             <TableCell>{{ cliente.email }}</TableCell>
-                            <TableCell>{{ cliente.cpf }}</TableCell>
+                            <TableCell>111</TableCell>
                             <TableCell>
-                                <Button variant="destructive">
-                                    Remover
-                                </Button>
+                               <AcoesTabelaCliente :cliente="cliente"/>
+
                             </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
+                <div
+                    class="flex h-full w-full flex-col items-center justify-center gap-4"
+                    v-else
+                
+                >
+
+                <Icon
+                    name="users"
+                    class="h-16 w-16 text-muted-foreground"
+                />
+
+                <p class="text-center text-muted-foreground">
+                    Nenhum vendedor encontrado.
+
+                </p>
+
+                </div>
             </div>
         </div>
     </AppLayout>
