@@ -10,6 +10,7 @@
     import AppLayout from '@/layouts/AppLayout.vue';
     import vendedores from '@/routes/vendedores';
     import { onMounted } from 'vue';
+    import { vMaska } from 'maska/vue';
     
 import { toast } from 'vue-sonner';
 

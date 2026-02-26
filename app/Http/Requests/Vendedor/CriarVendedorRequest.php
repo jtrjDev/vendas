@@ -15,6 +15,14 @@ class CriarVendedorRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'cpf' => preg_replace('/\D/', '', $this->cpf),
+            'cep' => preg_replace('/\D/', '', $this->cep),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
