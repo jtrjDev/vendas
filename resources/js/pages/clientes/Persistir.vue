@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
 import clientes from '@/routes/clientes';
 import { onMounted } from 'vue';
+import { toast } from 'vue-sonner';
 
 const page = usePage();
 
@@ -67,12 +68,14 @@ function enviar() {
     if (idCliente !== null) {
         form.put(clientes.update(idCliente).url,{
             onSuccess: () => {
-                    console.log('success');
+                    
+                    toast.success("Vendedor criado com sucesso !");
                 },
                 onError: () => {
-                    console.log('erro');
+                  
+                    toast.error('erro ao editar cliente!');
                     
-                } 
+                }
         })
 
         return;
@@ -80,11 +83,14 @@ function enviar() {
 
     form.post(clientes.create().url, {
         onSuccess: () => {
-            console.log('success');
-        },
-        onError: () => {
-            console.log(form.errors);
-        },
+                    
+                    toast.success("Vendedor criado com sucesso !");
+                },
+                onError: () => {
+                  
+                    toast.error('erro ao editar cliente!');
+                    
+                },
     });
 
 }

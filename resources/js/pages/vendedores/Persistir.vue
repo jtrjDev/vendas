@@ -9,8 +9,9 @@
     import { Separator } from '@/components/ui/separator';
     import AppLayout from '@/layouts/AppLayout.vue';
     import vendedores from '@/routes/vendedores';
-import { onMounted } from 'vue';
-import { Toast } from 'reka-ui/namespaced';
+    import { onMounted } from 'vue';
+    
+import { toast } from 'vue-sonner';
 
     const page = usePage();
 
@@ -126,10 +127,12 @@ import { Toast } from 'reka-ui/namespaced';
         if (idVendedor !== null) {
             form.put(vendedores.update(idVendedor).url, {
                 onSuccess: () => {
-                    console.log('success');
+                    
+                    toast.success("Vendedor criado com sucesso !");
                 },
                 onError: () => {
-                    console.log('erro');
+                  
+                    toast.error('erro ao editar vendedor!');
                     
                 }
             });

@@ -3,6 +3,7 @@ import { Link, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger, DialogClose, } from '@/components/ui/dialog';
 import vendedores from '@/routes/vendedores';
+import { toast } from 'vue-sonner';
 
 const props = defineProps<{
     vendedor: Record<string, any>;
@@ -13,13 +14,14 @@ const vendedor = props.vendedor;
 function removeVendedor(){
     router.delete(vendedores.remove(vendedor.id_vendedor),{
         onSuccess: () => {
-            console.log('success');
-            
-        },
-        onError: (errors) =>{
-            console.log(errors);
-            
-        }
+                    
+                    toast.success("Vendedor removido com sucesso !");
+                },
+                onError: () => {
+                  
+                    toast.error('erro ao remover vendedor!');
+                    
+                },
     })
 }
 
