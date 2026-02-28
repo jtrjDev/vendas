@@ -54,6 +54,8 @@ class VendedorController extends Controller
 
             ]);
 
+            $user->addRole('vendedor');
+            
             $endereco = Endereco::query()->create([
                 'cep'           => $request->cep,
                 'rua'           => $request->rua,

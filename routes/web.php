@@ -19,7 +19,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::prefix("/vendedores")->group(function(){
+Route::prefix("/vendedores")->middleware('role:admin')->group(function(){
     Route::get('/',[VendedorController::class, 'index'])->name('vendedores.listar');
     Route::get('/persistir/{id?}', [VendedorController::class, 'persistir'])->name('vendedores.persistir');
 
@@ -31,7 +31,7 @@ Route::prefix("/vendedores")->group(function(){
 
 });
 
-Route::prefix("/clientes")->group(function(){
+Route::prefix("/clientes")->middleware('role:admin')->group(function(){
     Route::get('/', [ClienteController::class, 'index'])->name('clientes.listar');
     Route::get('/persistir/{id?}', [ClienteController::class, 'persistir'])->name('clientes.persistir');
 
@@ -45,7 +45,7 @@ Route::prefix("/vendas")->group(function(){
     Route::get('/persistir', [VendaController::class, 'persistir'])->name('vendas.persistir');
 });
 
-Route::prefix("/produtos")->group(function(){
+Route::prefix("/produtos")->middleware('role:admin')->group(function(){
     Route::get('/', [ProdutoController::class, 'index'])->name('produtos.listar');
     Route::get('/persistir', [ProdutoController::class, 'persistir'])->name('produtos.persistir');
     //Persistencias
