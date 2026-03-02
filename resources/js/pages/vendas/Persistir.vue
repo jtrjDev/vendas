@@ -1,95 +1,212 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Form, Head, useForm, usePage } from '@inertiajs/vue3'
+import { toast } from 'vue-sonner'
+import { computed } from 'vue'
+
+import Heading from '@/components/Heading.vue'
+import InputError from '@/components/InputError.vue'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import AppLayout from '@/layouts/AppLayout.vue'
+import vendas from '@/routes/vendas'
+
 import {
     Select,
     SelectContent,
     SelectValue,
     SelectItem,
     SelectTrigger,
-} from '@/components/ui/select';
-import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import AppLayout from '@/layouts/AppLayout.vue';
-</script>
-<template>
+} from '@/components/ui/select'
 
-    <Head title="Vendas" />
+const page = usePage()
+
+const props = page.props as unknown as {
+    clientes: any[]
+    vendedores: any[]
+    produtos: any[]
+}
+
+const clientes = props.clientes
+const vendedores = props.vendedores
+const produtos = props.produtos
+
+const form = useForm({
+    id_cliente: null as number | null,
+    id_vendedor: null as number | null,
+    itens: [] as Array<{
+        id_produto: number | null,
+        valor: number
+    }>
+})
+
+function adicionarItem() {
+    form.itens.push({
+        id_produto: null,
+        valor: 0
+    })
+}
+
+function removerItem(index: number) {
+    form.itens.splice(index, 1)
+}
+
+const total = computed(() =>
+    form.itens.reduce((acc, item) => acc + Number(item.valor || 0), 0)
+)
+
+function enviar() {
+
+    if (!form.id_cliente) {
+        toast.error('Selecione um cliente')
+        return
+    }
+
+    if (!form.id_vendedor) {
+        toast.error('Selecione um vendedor')
+        return
+    }
+
+    if (form.itens.length === 0) {
+        toast.error('Adicione pelo menos um item')
+        return
+    }
+
+    form.post(vendas.create().url, {
+        onSuccess: () => {
+            toast.success('Venda cadastrada com sucesso!')
+            form.reset()
+        },
+        onError: () => {
+            toast.error('Erro ao cadastrar venda!')
+        }
+    })
+}
+</script>
+
+<template>
+    <Head title="Venda" />
 
     <AppLayout>
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <Heading title="Vendas" description="Realizar venda" />
+            <Heading title="Venda" description="Realizar venda" />
 
-            <div class="relative flex-1 rounded-xl border p-4">
+            <div class="relative flex-1 rounded-xl border p-6">
 
-                <!-- DADOS DA VENDA -->
-                <Heading title="Dados da venda" />
+                <Form @submit.prevent="enviar">
 
-                <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <!-- DADOS -->
+                    <Heading title="Dados da venda" />
 
-                    <!-- CLIENTE -->
-                    <div class="flex flex-col gap-1">
-                        <Label for="cliente">Cliente</Label>
-                        <Select class="w-full">
-                            <SelectTrigger class="h-10 w-full" >
-                                <SelectValue placeholder="Selecione o cliente" />
-                            </SelectTrigger>
+                    <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                            <SelectContent>
-                                <SelectItem :value="null">
-                                    Todos os clientes
-                                </SelectItem>
-                                <SelectItem :value="1">
-                                    Cliente 1
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <!-- CLIENTE -->
+                        <div class="grid gap-2">
+                            <Label>Cliente</Label>
+                            <Select v-model="form.id_cliente">
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o cliente" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem
+                                        v-for="cliente in clientes"
+                                        :key="cliente.id"
+                                        :value="cliente.id"
+                                    >
+                                        {{ cliente.nome }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.id_cliente" />
+                        </div>
+
+                        <!-- VENDEDOR -->
+                        <div class="grid gap-2">
+                            <Label>Vendedor</Label>
+                            <Select v-model="form.id_vendedor">
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o vendedor" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem
+                                        v-for="vendedor in vendedores"
+                                        :key="vendedor.id_vendedor"
+                                        :value="vendedor.id_vendedor"
+                                    >
+                                        {{ vendedor.user.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.id_vendedor" />
+                        </div>
                     </div>
 
-                    <!-- VENDEDOR -->
-                    <div class="flex flex-col gap-1">
-                        <Label for="vendedor">Vendedor</Label>
-                        <Select class="w-full">
-                            <SelectTrigger class="h-10 w-full">
-                                <SelectValue placeholder="Selecione o vendedor" />
-                            </SelectTrigger>
+                    <Separator class="my-8" />
 
-                            <SelectContent>
-                                <SelectItem :value="null">
-                                    Todos os vendedores
-                                </SelectItem>
-                                <SelectItem :value="1">
-                                    Vendedor 1
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <!-- ITENS -->
+                    <Heading title="Itens da venda" />
+
+                    <div class="mt-6">
+                        <Button type="button" @click="adicionarItem">
+                            + Adicionar item
+                        </Button>
                     </div>
 
-                </div>
+                    <div class="mt-6 space-y-4">
+                        <div
+                            v-for="(item, index) in form.itens"
+                            :key="index"
+                            class="grid grid-cols-3 gap-4 border rounded-lg p-4"
+                        >
+                            <Select v-model="item.id_produto">
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Produto" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem
+                                        v-for="produto in produtos"
+                                        :key="produto.id"
+                                        :value="produto.id"
+                                    >
+                                        {{ produto.nome }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
 
+                            <Input
+                                type="number"
+                                v-model="item.valor"
+                                placeholder="Valor"
+                            />
 
-                <Separator class="my-8" />
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                @click="removerItem(index)"
+                            >
+                                Remover
+                            </Button>
+                        </div>
+                    </div>
 
-                <!-- ITENS DA VENDA -->
-                <Heading title="Itens da venda" class="mt-6" />
+                    <!-- TOTAL -->
+                    <div class="mt-6 text-right font-semibold">
+                        Total: R$ {{ total.toFixed(2) }}
+                    </div>
 
-                <div class="mt-6 flex gap-4">
-                    <Button type="button">
-                        Adicionar itens
+                    <Separator class="my-8" />
+
+                    <!-- BOTÃO -->
+                    <Button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="mt-2 w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                    >
+                        Salvar Venda
                     </Button>
-                </div>
 
-                <Separator class="my-8" />
-
-                <!-- AÇÃO FINAL -->
-                <div class="mt-6 flex justify-center">
-                    <Button type="submit" class="bg-green-400 dark:bg-green-500 dark:hover:bg-green-500/90" tabindex="5"
-                        data-test="register-user-button">
-                        Gravar venda
-                    </Button>
-                </div>
+                </Form>
 
             </div>
         </div>

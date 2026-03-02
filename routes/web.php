@@ -41,8 +41,13 @@ Route::prefix("/clientes")->middleware('role:admin')->group(function(){
     Route::delete('/delete/{idCliente}', [ClienteController::class, 'remove'])->name('clientes.remove');
 });
 Route::prefix("/vendas")->group(function(){
+
     Route::get('/', [VendaController::class, 'index'])->name('vendas.listar');
     Route::get('/persistir', [VendaController::class, 'persistir'])->name('vendas.persistir');
+    Route::get('excel/{idVenda}', [VendaController::class, 'export'])->name('vendas.export');
+
+    Route::post('/create', [VendaController::class, 'create'])
+        ->name('vendas.create');
 });
 
 Route::prefix("/produtos")->middleware('role:admin')->group(function(){
