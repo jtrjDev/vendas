@@ -40,14 +40,18 @@ Route::prefix("/clientes")->middleware('role:admin')->group(function(){
     Route::put('/update/{idCliente}', [ClienteController::class, 'update'])->name('clientes.update');
     Route::delete('/delete/{idCliente}', [ClienteController::class, 'remove'])->name('clientes.remove');
 });
+
+
 Route::prefix("/vendas")->group(function(){
 
     Route::get('/', [VendaController::class, 'index'])->name('vendas.listar');
-    Route::get('/persistir', [VendaController::class, 'persistir'])->name('vendas.persistir');
+    Route::get('/persistir/{id?}', [VendaController::class, 'persistir'])->name('vendas.persistir');
     Route::get('excel/{idVenda}', [VendaController::class, 'export'])->name('vendas.export');
 
     Route::post('/create', [VendaController::class, 'create'])
         ->name('vendas.create');
+    Route::put('/update/{id}', [VendaController::class, 'update'])->name('vendas.update');
+    Route::delete('/remove/{id}', [VendaController::class, 'remove'])->name('vendas.remove');
 });
 
 Route::prefix("/produtos")->middleware('role:admin')->group(function(){

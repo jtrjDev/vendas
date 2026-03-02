@@ -3,7 +3,7 @@ import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { toast } from 'vue-sonner'
 import { computed } from 'vue'
 
-import { vendas } from '@/routes'
+import vendas from '@/routes/vendas'
 
 import {
     Select,
