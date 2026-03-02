@@ -4,7 +4,7 @@ namespace App\Http\Requests\Venda;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CriarVendaRequest extends FormRequest
+class EditarVendaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class CriarVendaRequest extends FormRequest
     {
 
         return [
-            'data_venda'               => ['required', 'date'],
+            'id'                 => ['required', 'integer', 'exists:tb_venda,id'],
+            'data_venda'         => ['required', 'date'],
             'id_cliente'         => ['required', 'exists:tb_cliente,id'],
             'itens'              => ['required', 'array', 'min:1'],
             'itens.*.id_produto' => ['required', 'exists:tb_produto,id'],

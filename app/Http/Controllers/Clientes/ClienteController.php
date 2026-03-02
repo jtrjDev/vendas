@@ -15,21 +15,28 @@ use Inertia\Inertia;
 class ClienteController extends Controller
 {
     public function index(){
-        $clientes = Cliente::query()->where('removido', false)->get();
+        $clientes = Cliente::query()
+                        ->where('removido', false)
+                        ->get();
         return Inertia::render("clientes/Listar", [
             'clientes' => $clientes
         ]);
     }
 
     public function persistir($idCliente = null){
-        if ($idCliente !== null) {
-            $cliente = Cliente::with(['endereco'])
-                    ->where('id_cliente', $idCliente)
-                    ->first();
+        
+    $cliente = Cliente::query()
+                ->with(['endereco'])
+                ->where('id_cliente', $idCliente)
+                ->first();
+        if (!empty($idCliente) && empty($cliente)) {
+            return redirect()->route('clientes.listar');
         }
+
+            
         return Inertia::render("clientes/Persistir", [
-            'cliente' => $cliente ?? null,
             'idCliente'=> $idCliente,
+            'cliente' => $cliente,
         ]);
     }
 

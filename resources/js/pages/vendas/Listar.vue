@@ -26,6 +26,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import vendas from '@/routes/vendas';
 </script>
 <template>
 
@@ -37,7 +38,7 @@ import {
 
             <!-- Botão nova venda -->
             <div class="flex justify-end">
-                <Link href="/vendas/persistir">
+                <Link :href="vendas.persistir()">
                     <Button>
                         Nova Venda
                     </Button>

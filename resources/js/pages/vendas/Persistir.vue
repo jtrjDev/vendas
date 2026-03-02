@@ -13,6 +13,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
+import ButtonAdicionarItemVenda from '@/components/vendas/ButtonAdicionarItemVenda.vue';
+import { ref } from 'vue';
+
+const itens = ref<any[]>([])
 </script>
 <template>
 
@@ -76,9 +80,10 @@ import AppLayout from '@/layouts/AppLayout.vue';
                 <Heading title="Itens da venda" class="mt-6" />
 
                 <div class="mt-6 flex gap-4">
-                    <Button type="button">
-                        Adicionar itens
-                    </Button>
+                   <ButtonAdicionarItemVenda
+                    :produtos="produtos"
+                    @adicionar="(item) => itens.push(item)"
+                    />
                 </div>
 
                 <Separator class="my-8" />
