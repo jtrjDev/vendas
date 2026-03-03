@@ -101,6 +101,7 @@ class VendaController extends Controller
                     $itemVez->update([
                         'id_produto' => $item['id_produto'],
                         'valor'      => $item['valor'],
+                        'quantidade' => $item['quantidade'],
 
                     ]);
                 } else {
@@ -108,6 +109,7 @@ class VendaController extends Controller
                         'id_venda'   => $idVenda,
                         'id_produto' => $item['id_produto'],
                         'valor'      => $item['valor'],
+                        'quantidade' => $item['quantidade'],
                         'id_admin'   => auth()->user()->parent_user_id ?? auth()->user()->id,
 
                     ]);

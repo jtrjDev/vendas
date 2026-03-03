@@ -40,6 +40,8 @@ const props = page.props as unknown as {
     clientes?: Record<string, any>[];
     produtos?: Record<string, any>[];
 };
+console.log("teste" + props.idVenda);
+
 
 const tituloPagina = props.idVenda ? 'Editar Venda' : 'Realizar nova Venda';
 
@@ -115,7 +117,7 @@ const produtosList = props.produtos;
 
 function submit() {
     if (props?.venda?.id) {
-        form.put(vendas.update(venda?.id).url, {
+        form.put(vendas.update(props.venda.id).url, {
             onSuccess: () => {
                 toast.success('Venda atualizada com sucesso!');
             },

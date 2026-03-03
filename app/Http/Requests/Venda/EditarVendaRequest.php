@@ -28,6 +28,7 @@ class EditarVendaRequest extends FormRequest
             'id_cliente'         => ['required', 'exists:tb_cliente,id'],
             'itens'              => ['required', 'array', 'min:1'],
             'itens.*.id_produto' => ['required', 'exists:tb_produto,id'],
+            'itens.*.quantidade' => ['required', 'integer', 'min:1'],
             'itens.*.valor'      => ['required', 'numeric', 'min:0'],
         ];
     }
