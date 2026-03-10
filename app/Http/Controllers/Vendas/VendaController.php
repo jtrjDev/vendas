@@ -68,6 +68,7 @@ class VendaController extends Controller
                     'id_venda'   => $venda->id,
                     'id_produto' => $item['id_produto'],
                     'valor'      => $item['valor'],
+                    'quantidade' => $item['quantidade'],
                     'id_admin'   => $idAdmin,
 
                 ]);

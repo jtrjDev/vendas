@@ -60,7 +60,7 @@ class VendedorController extends Controller
                 'cep'           => $request->cep,
                 'rua'           => $request->rua,
                 'numero'        => $request->numero,
-                'complemento'   => $request->complemento,
+                'complemento'   => $request->complemento ?? null,
                 'bairro'        => $request->bairro,
                 'cidade'        => $request->cidade,
                 'estado'        => $request->estado,

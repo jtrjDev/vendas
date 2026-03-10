@@ -31,10 +31,11 @@ class CriarVendedorRequest extends FormRequest
     public function rules(): array
     {
         $vendedor = [
-            'nome' => ['required', 'string'],
-            'email'=> ['required', 'email'],
-            'cpf'  => ['required', 'min:11','max:11'],
-            'comissao' => ['required', 'numeric'],
+            'nome'          => ['required', 'string'],
+            'email'         => ['required', 'email'],
+            'cpf'           => ['required', 'min:11','max:11'],
+            'observacao'    => ['nullable', 'string'],
+            'comissao'      => ['required', 'numeric'],
             
 
         ];
@@ -46,7 +47,7 @@ class CriarVendedorRequest extends FormRequest
     public function messages()
     {
         $vendedor = [
-            'required'  => ':attribute e obrigatorio',
+            'required'  => ':attribute é obrigatorio',
             'string'    => ':atrribute deve ser uma string',
             'email'     => ':atrribute deve ser um email',
             'min'       => ':attribute deve ter no minimo :min caracteres',

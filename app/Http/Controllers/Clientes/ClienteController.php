@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clientes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cliente\CriarClienteRequest;
 use App\Http\Requests\Cliente\EditarClienteRequest;
+use App\Http\Requests\EditarClienteRequest as RequestsEditarClienteRequest;
 use App\Models\Cliente;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
@@ -78,12 +79,12 @@ class ClienteController extends Controller
 
     }
 
-    public function update(EditarVendedorRequest $request)
+    public function update(RequestsEditarClienteRequest $request, mixed $idCliente)
     {
         $conn = \DB::connection();
         try {
              $conn->beginTransaction();
-             $cliente = Cliente::query()->where('id_cliente', $request->id_cliente)->first();
+             $cliente = Cliente::query()->where('id', $request->id_cliente)->first();
 
               $cliente->endereco->update([
                 'cep'           => $request->cep,
@@ -111,7 +112,7 @@ class ClienteController extends Controller
 
     public function remove(mixed $idCliente)
     {
-        $cliente = Cliente::query()->where('id_cliente', $idCliente)->first();
+        $cliente = Cliente::query()->where('id', $idCliente)->first();
 
         $cliente->update([
             'removido' => true,

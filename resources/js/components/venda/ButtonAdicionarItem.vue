@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { watch } from 'vue';
 import {
     Select,
     SelectContent,
@@ -30,8 +31,11 @@ const props = defineProps<{
 }>();
 
 const produto = toRef(props, 'produto');
+console.log('valor Produto', produto.value);
 
 const open = ref(false);
+
+
 
 const form = useForm({
     id_produto: '',
@@ -51,6 +55,18 @@ const emit = defineEmits<{
         },
     ): void;
 }>();
+
+watch(() => form.id_produto, (novoId) => {
+    if (!novoId) return;
+
+    const selected = produto.value?.find(
+        (p: any) => String(p.id) === String(novoId)
+    );
+
+    if (selected) {
+        form.valor = String(selected.valor);
+    }
+});
 
 function onValorInput(e: Event) {
     const el = e.target as HTMLInputElement;
@@ -92,14 +108,7 @@ function onValorBlur() {
 }
 
 // console.log(produto.value);
-function onChangeProduto() {
-    const selected =
-        Array.isArray(produto.value) && produto.value.length
-            ? produto.value.find((p: any) => String(p.id))
-            : null;
 
-    form.valor = selected?.preco ?? '';
-}
 function submit() {
     const selected =
         Array.isArray(produto.value) && produto.value.length
@@ -144,10 +153,9 @@ function submit() {
                         <SelectLabel>Produtos</SelectLabel>
                         <SelectGroup>
                             <SelectItem
-                                v-for="item in produto"
-                                :key="item.id"
-                                :value="item.id"
-                                @select="onChangeProduto"
+                               v-for="item in produto"
+                            :key="item.id"
+                            :value="item.id"
                             >
                                 {{ item.nome }}
                             </SelectItem>

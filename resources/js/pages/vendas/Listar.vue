@@ -84,9 +84,12 @@ const labelClienteSelecionado = computed(() => {
 });
 
 function sumValor(itens?: Venda['itens']): number {
-    return (itens ?? []).reduce((s, i) => s + (Number(i?.valor) || 0), 0);
+    return (itens ?? []).reduce((s, i) => {
+        const valor = Number(i?.valor) || 0;
+        const qtd = Number(i?.quantidade) || 1;
+        return s + valor * qtd;
+    }, 0);
 }
-
 function obterValorComissao(valorVenda: number, comissao: number): number {
     return (valorVenda * comissao) / 100;
 }
@@ -182,12 +185,12 @@ function obterValorComissao(valorVenda: number, comissao: number): number {
                                     vendas.vendedor?.name ?? vendas.vendedor.name ?? '—'
                                 }}
                             </TableCell>
-                            <TableCell>
+                           <TableCell>
                                 R$
                                 {{
-                                    Helper.formatarValorMonetarioPtBr(
-                                        sumValor(vendas.itens),
-                                    )
+                                Helper.formatarValorMonetarioPtBr(
+                                    sumValor(vendas.itens)
+                                )
                                 }}
                             </TableCell>
                             <TableCell>

@@ -37,8 +37,8 @@ Route::prefix("/clientes")->middleware('role:admin')->group(function(){
 
     //Persitencias do cliente
     Route::post('/create', [ClienteController::class, 'create'])->name('clientes.create');
-    Route::put('/update/{idCliente}', [ClienteController::class, 'update'])->name('clientes.update');
-    Route::delete('/delete/{idCliente}', [ClienteController::class, 'remove'])->name('clientes.remove');
+    Route::put('/update/{id}', [ClienteController::class, 'update'])->name('clientes.update');
+    Route::delete('/remove/{id}', [ClienteController::class, 'remove'])->name('clientes.remove');
 });
 
 
